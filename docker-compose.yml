@@ -1,0 +1,40 @@
+version: "3.8"
+services:
+  rdb:
+    image: redis
+    container_name: rdb-casevpr
+    restart: unless-stopped
+    networks:
+      - casevpr_nw
+
+  casevpr:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile
+    image: casevpr
+    stdin_open: true
+    tty: true
+    networks:
+      - casevpr_nw
+    volumes:
+      - .:/home/user/CaseVPR
+      - type: volume
+        source: datasets
+        target: /home/user/datasets
+        volume:
+          nocopy: true
+    ipc: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+networks:
+  casevpr_nw:
+
+volumes:
+  datasets:
+    external: true
+    name: datasets

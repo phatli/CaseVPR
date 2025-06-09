@@ -1,0 +1,44 @@
+{
+  "test_lst": [
+    {
+      "ds_name": "robotcar_r",
+      "l1": ["test_database"],
+      "l2": ["test_queries"],
+      "positive_dist": 2
+    }
+  ],
+  "pipeline_lst": [
+    {
+      "fe_lst": [
+        "crica"
+      ],
+      "be_lst": ["none"]
+    }
+  ],
+  "default_settings": {
+    "seq_gt": false,
+    "seq_gt_vgt": false,
+    "save_seq": false,
+    "save_retrieval": true,
+    "save_feature_cache": true,
+    "test_name": "",
+    "seperate_ds": true,
+    "default_seqbackend_params": {
+      "ds": "5",
+      "thresh_out": "100",
+      "stp_gap": "14",
+      "matching_K": "5",
+      "matching_KK": "4",
+      "positive_dist": 11,
+      "dist_cos_thres": 1,
+      "search_nonkeyframe": true,
+      "sim": "cos"
+    }
+  },
+  "settings_lst": [
+    {
+      "test_name": "debug4",
+      "default_seqbackend_params": { "ds": "5" }
+    }
+  ]
+}

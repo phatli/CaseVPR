@@ -1,0 +1,107 @@
+{
+  "test_lst": [
+    {
+      "ds_name": "rosimg",
+      "l1": ["20231114_nanyanglink_day_cloudy"],
+      "l2": ["20231103_nanyanglink_night_sunny"],
+      "positive_dist": 2
+    },
+    {
+      "ds_name": "nordland",
+      "l1": ["fall"],
+      "l2": ["spring", "winter"],
+      "positive_dist": 1,
+      "skip_same": true
+    },
+    {
+      "ds_name": "nordland",
+      "l1": ["spring"],
+      "l2": ["summer"],
+      "positive_dist": 1,
+      "skip_same": true
+    },
+    {
+      "ds_name": "oxford",
+      "l1": ["1_database"],
+      "l2": ["1_queries"],
+      "positive_dist": 2
+    },
+    {
+      "ds_name": "oxford",
+      "l1": ["2_database"],
+      "l2": ["2_queries"],
+      "positive_dist": 2
+    },
+    {
+      "ds_name": "oxford_v",
+      "l1": ["1_database"],
+      "l2": ["1_queries"],
+      "positive_dist": 2
+    },
+    {
+      "ds_name": "rosimg",
+      "l1": ["src_ccw_day_210622"],
+      "l2": ["src_ccw_night_230622"],
+      "positive_dist": 2
+    }
+  ],
+  "pipeline_lst": [
+    {
+      "fe_lst": ["mixvpr", "salad", "cliquemining", "boq"],
+      "be_lst": ["none"]
+    },
+    {
+      "fe_lst": ["netvlad_WPCA4096", "ep", "crica"],
+      "be_lst": ["none", "seqslam", "adaptseq"]
+    },
+    {
+      "fe_lst": ["none+svpr", "none+jist", "none+vgg16_seqvlad"],
+      "be_lst": ["seq_desc"]
+    },
+    {
+      "fe_lst": ["hvpr_seqnet"],
+      "be_lst": ["seq_desc_seqmatch"]
+    },
+    {
+      "fe_lst": [
+        "netvlad_WPCA4096+vgg16_seqvlad",
+        "ep+svpr",
+        "ep+jist",
+        "ep+vgg16_seqvlad",
+        "crica+svpr",
+        "crica+jist",
+        "crica+vgg16_seqvlad",
+        "hvpr_casevpr_224",
+        "hvpr_casevpr_322",
+        "hvpr_casevpr_224_crica"
+      ],
+      "be_lst": ["seq_desc_adaptseq_v2"]
+    }
+  ],
+  "default_settings": {
+    "seq_gt": false,
+    "seq_gt_vgt": false,
+    "save_seq": false,
+    "save_retrieval": true,
+    "save_feature_cache": true,
+    "test_name": "",
+    "seperate_ds": true,
+    "default_seqbackend_params": {
+      "ds": "5",
+      "thresh_out": "100",
+      "stp_gap": "14",
+      "matching_K": "5",
+      "matching_KK": "4",
+      "positive_dist": 11,
+      "dist_cos_thres": 1,
+      "search_nonkeyframe": true,
+      "sim": "cos"
+    }
+  },
+  "settings_lst": [
+    {
+      "test_name": "default",
+      "default_seqbackend_params": { "ds": "5" }
+    }
+  ]
+}

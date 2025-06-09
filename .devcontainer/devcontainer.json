@@ -1,0 +1,38 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.183.0/containers/ubuntu
+{
+  "name": "U2004DevEnv",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "casevpr",
+  "workspaceFolder": "/home/user/CaseVPR",
+  "shutdownAction": "stopCompose",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.profiles.linux": {
+          "zsh": {
+            "path": "/bin/zsh"
+          }
+        },
+        "terminal.integrated.defaultProfile.linux": "zsh"
+      },
+
+      "extensions": [
+        "ms-python.python",
+        "ms-python.autopep8",
+        "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter",
+        "christian-kohler.path-intellisense",
+        "shd101wyy.markdown-preview-enhanced",
+        "njpwerner.autodocstring",
+        "esbenp.prettier-vscode",
+        "donjayamanne.githistory",
+        "gerrnperl.outline-map",
+        "elazarcoh.simply-view-image-for-python-debugging",
+        "github.copilot",
+        "github.copilot-chat"
+      ]
+    }
+  },
+  "remoteUser": "user"
+}
