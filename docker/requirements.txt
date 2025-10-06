@@ -1,20 +1,31 @@
-redis
-tqdm
-huggingface-hub
+# runtime + utils
+redis>=5.0
+tqdm>=4.66
+prettytable>=3.9
+
+# HF / models
+huggingface-hub>=0.20
+transformers==4.57.0
+einops>=0.6
+timm==1.0.20
+pytorch_metric_learning==2.9.0
+pytorch_lightning==2.5.5
+protobuf>=4.25.8
+safetensors>=0.4
+
+# numerics / viz
+numpy>=2.0,<3
+pandas==2.3.3
+scikit-learn==1.7.2
+matplotlib==3.10.6
+h5py>=3.10
+
+# CV
+opencv-python-headless>=4.8
+
+# style
+autopep8>=2.0
+
 faiss-gpu
-opencv-python
-numpy
-autopep8
-pandas
-einops
-timm
-transformers
-matplotlib
-scikit-learn
-protobuf==3.20.1
-pytorch_lightning
-pytorch_metric_learning
-prettytable
-h5py
-xformer
+
 xformers==0.0.27
