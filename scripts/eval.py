@@ -76,7 +76,7 @@ def update_dict(orig_dict, update_dict):
 
 def main():
     args = get_args()
-    global GPU_IDS
+    global GPU_IDS, MSG_QUEUE
     GPU_IDS = args.gpu_ids
 
     debug = args.debug
@@ -129,6 +129,7 @@ def main():
     # setup manager & message queue
     manager = mp.Manager()
     msg_queue = manager.Queue()
+    MSG_QUEUE = msg_queue
 
     if debug or processes_num == 1:
         os.environ["CUDA_DEVICE_ORDER"]   = "PCI_BUS_ID"
@@ -190,9 +191,16 @@ def proceed_task(args):
     # torch.cuda.set_device(gpu_to_use)
 
     # send startup message
-    MSG_QUEUE.put(f">> [RUNNING] Dataset: {ds_name}_{l1} Pipeline: {fe}_{be} GPU_ID: {gpu_to_use}")
+    def log(msg):
+        if MSG_QUEUE is not None:
+            MSG_QUEUE.put(msg)
+        print(msg)
+
+    start_msg = f">> [RUNNING] Dataset: {ds_name}_{l1} Pipeline: {fe}_{be} GPU_ID: {gpu_to_use}"
+    log(start_msg)
 
     # wait until at least 3GB free on this GPU
+    waiting_msg_shown = False
     while True:
         try:
             out = subprocess.check_output([
@@ -206,6 +214,10 @@ def proceed_task(args):
             free_mem = 0
         if free_mem >= 3000:
             break
+        if not waiting_msg_shown:
+            wait_msg = f">> Waiting for GPU {gpu_to_use} to have >=3GB free (current {free_mem}MB)"
+            log(wait_msg)
+            waiting_msg_shown = True
         time.sleep(5)
 
     try:
@@ -270,7 +282,8 @@ def proceed_task(args):
                     ld.saveResult()
                 read_test_results(known_ds_names=known_ds_names)
     except Exception:
-        MSG_QUEUE.put(f"❌ ERROR Dataset: {ds_name}_{l1} Pipeline: {fe}_{be} GPU_ID={gpu_to_use}")
+        error_msg = f"❌ ERROR Dataset: {ds_name}_{l1} Pipeline: {fe}_{be} GPU_ID={gpu_to_use}"
+        log(error_msg)
         raise
 
 

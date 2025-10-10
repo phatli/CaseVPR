@@ -14,7 +14,7 @@ protobuf>=4.25.8
 safetensors>=0.4
 
 # numerics / viz
-numpy>=2.0,<3
+numpy==1.26.4
 pandas==2.3.3
 scikit-learn==1.7.2
 matplotlib==3.10.6
