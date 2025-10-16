@@ -3,6 +3,13 @@ redis>=5.0
 tqdm>=4.66
 prettytable>=3.9
 
+# numerics / viz
+numpy==1.26.4
+pandas==2.3.3
+scikit-learn==1.7.2
+matplotlib==3.10.6
+h5py>=3.10
+
 # HF / models
 huggingface-hub>=0.20
 transformers==4.57.0
@@ -12,13 +19,8 @@ pytorch_metric_learning==2.9.0
 pytorch_lightning==2.5.5
 protobuf>=4.25.8
 safetensors>=0.4
-
-# numerics / viz
-numpy==1.26.4
-pandas==2.3.3
-scikit-learn==1.7.2
-matplotlib==3.10.6
-h5py>=3.10
+faiss-gpu
+xformers==0.0.27
 
 # CV
 opencv-python-headless>=4.8
@@ -26,6 +28,5 @@ opencv-python-headless>=4.8
 # style
 autopep8>=2.0
 
-faiss-gpu
-
-xformers==0.0.27
+# logging
+tensorboardX

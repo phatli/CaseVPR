@@ -1,8 +1,29 @@
 #!/usr/bin/env python
 
 """
-This script is used to automatically do offline tests on open-source dataset without using ROS environment.
-To run this code, install this package in root using "pip install -e .".
+Run evaluations by a JSON config.
+
+Config reference (see ``scripts/configs/eval/batch_tests.json``):
+    test_lst – list of dataset groups to evaluate. Each entry may contain:
+        ds_name – key from ``scripts/configs/ds_configs.py``.
+        l1 / l2 – reference and query split names, lists are expanded into every pairing.
+        positive_dist – (optional) distance threshold override used when forming ground-truth.
+        skip_same – (optional) skip cases where ``l1 == l2``.
+    pipeline_lst – combinations of front-end and back-end modules to evaluate.
+        fe_lst – names of feature extractors (e.g. ``hvpr_casevpr_224``).
+        be_lst – sequence back-end identifiers (e.g. ``seq_desc_adaptseq_v2``).
+    default_settings – baseline run parameters merged into every task, including:
+        seq_gt / seq_gt_vgt – enable sequence ground-truth and VGT evaluation.
+        save_seq, save_retrieval, save_feature_cache – toggle artifact dumps.
+        seperate_ds – treat reference/query sequences as disjoint datasets.
+        default_seqbackend_params – dictionary passed to the sequence back-end
+            (distance thresholds, matching parameters, etc.).
+    settings_lst – per-experiment overrides applied on top of ``default_settings``.
+        test_name – label appended to output folders.
+        Additional keys mirror ``default_settings`` and the back-end parameter map.
+
+Run ``python scripts/eval.py --json_path <config>`` after installing the
+package (``pip install -e .``).
 """
 import sys
 import os

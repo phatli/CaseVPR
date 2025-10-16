@@ -79,12 +79,18 @@ class LoopDetector():
         self.tp = TimeProbe(20) if showConsole else None
         self.print = self.tp.print if showConsole else wrapper_print
         encoder_configs = (img_encoders, seq_encoders, hvpr_encoders)
+
+        self.raw_dataset_name = dataset_name
+        self.raw_dataset2_name = dataset2_name
+        safe_dataset_name = dataset_name.replace("/", "_")
+        safe_dataset2_name = dataset2_name.replace("/", "_")
+
         self.seq_encoder = seqFrontEnd(model_name, encoder_configs, tp = self.tp, print_func=self.print)
         self.seq_backend = seqBackEnd(
             frontend_name=model_name,
             frontend_seqlen=self.seq_encoder.seqlen,
-            dataset_name=dataset_name,
-            dataset2_name=dataset2_name,
+            dataset_name=safe_dataset_name,
+            dataset2_name=safe_dataset2_name,
             **seqbackend_params,
             print_func=self.print, from_scratch=from_scratch, tp=self.tp, only_log_vectors=only_log_vectors)
 
@@ -93,8 +99,8 @@ class LoopDetector():
         self.__init_stat()
         self.from_scratch = from_scratch
         self.testName = get_testName(
-            dataset_name, dataset2_name, from_scratch, model_name, test_name, seqbackend_params)
-        self.dataset_name = dataset_name if from_scratch else dataset2_name
+            safe_dataset_name, safe_dataset2_name, from_scratch, model_name, test_name, seqbackend_params)
+        self.dataset_name = safe_dataset_name if from_scratch else safe_dataset2_name
         self.debug = debug
 
         self.result_save_dir = os.path.join(
@@ -115,7 +121,7 @@ class LoopDetector():
             if not exists(self.saveSeq_dir):
                 makedirs(self.saveSeq_dir)
 
-        self.feature_name = f"{dataset2_name}-{model_name}" if not self.from_scratch else f"{dataset_name}-{model_name}"
+        self.feature_name = f"{safe_dataset2_name}-{model_name}" if not self.from_scratch else f"{safe_dataset_name}-{model_name}"
         self.feature_path = os.path.join(
             CASEVPR_ROOT_DIR, "output", "feature_cache", self.feature_name)
 

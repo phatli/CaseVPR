@@ -159,31 +159,37 @@ hvpr_encoders = {
         "class": HVPR_CaseNet,
         "class_args": {
             "seq_len": 5,
-            "encoder_type": "bs_d_c"
+            "encoder_type": "bs_d_c",
+            "is_training": False,
         },
         "ckpt_path": "models/crica.pth",
         "img_shape": (224, 224),
         "input_transform": input_transform,
+        "features_dim": 10752,
     },
     "hvpr_casevpr_224":{
         "class": HVPR_CaseNet,
         "class_args": {
             "seq_len": 5,
-            "encoder_type": "bs_d_c"
+            "encoder_type": "bs_d_c",
+            "is_training": False,
         },
         "ckpt_path": "models/casevpr_224.pth",
         "img_shape": (224, 224),
         "input_transform": input_transform_vgt,
+        "features_dim": 10752,
     },
     "hvpr_casevpr_322":{
         "class": HVPR_CaseNet,
         "class_args": {
             "seq_len": 5,
-            "encoder_type": "bs_d_c"
+            "encoder_type": "bs_d_c",
+            "is_training": False,
         },
         "ckpt_path": "models/casevpr_322.pth",
         "img_shape": (322, 322),
         "input_transform": input_transform,
+        "features_dim": 10752,
     },
     "hvpr_seqnet": {
         "class": HVPR_SeqNet,
@@ -196,5 +202,6 @@ hvpr_encoders = {
         "ckpt_path": "models/netvladwpca4096_seqnet.pth",
         "img_shape": (480, 640),
         "input_transform": input_transform_vgt,
+        "features_dim": 4096,
     }
 }

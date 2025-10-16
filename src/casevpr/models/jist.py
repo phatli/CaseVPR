@@ -64,8 +64,9 @@ class JistModel(nn.Module):
         if agg_type == "seqgem":
             self.aggregation_dim = self.fc_output_dim
             self.seq_gem = SeqGeM()
-        
+
         self.agg_type = agg_type
+        self.meta = {"outputdim": self.aggregation_dim}
         
     def forward(self, x):
         x = self.model(x)

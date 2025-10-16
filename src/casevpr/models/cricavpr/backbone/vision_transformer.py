@@ -284,10 +284,7 @@ class DinoVisionTransformer(nn.Module):
 
     def forward(self, *args, is_training=False, **kwargs):
         ret = self.forward_features(*args, **kwargs)
-        if is_training:
-            return ret
-        else:
-            return ret#self.head(ret["x_norm_clstoken"])
+        return ret
 
 
 class DinoVisionTransformerDual(nn.Module):

@@ -1,0 +1,71 @@
+{
+  "experiment": {
+    "name": "casevpr_hvpr_224",
+    "logs_root": "output/train_logs",
+    "seed": 43,
+    "deterministic": false,
+    "save_every_epoch": true,
+    "pretrain_model": "models/crica.pth"
+  },
+  "model": {
+    "seq_encoder": "hvpr_casevpr_224",
+    "args_override": {
+      "seq_len": 5,
+      "encoder_type": "bs_d_c"
+    }
+  },
+  "data": {
+    "dataset_path": "/home/user/datasets/oxford_robotcar",
+    "seq_length": 5,
+    "train_posDistThr": 10,
+    "val_posDistThr": 25,
+    "negDistThr": 25,
+    "seq_gt_strategy": "strict",
+    "neg_seq_gt_strategy": "lax",
+    "img_shape": [224, 224]
+  },
+  "loader": {
+    "train_batch_size": 8,
+    "infer_batch_size": 1,
+    "num_workers": 15,
+    "queries_per_epoch": 5000,
+    "n_gpus": 1,
+    "test_shuffle": false,
+    "batch_split_size": 4
+  },
+  "mining": {
+    "cached_negatives": 1000,
+    "cached_queries": 1000,
+    "nNeg": 5,
+    "augseq": false,
+    "augseq_max_step": 2,
+    "augseq_prob": 0.3,
+    "seq_neg_mining": false,
+    "seq_neg_mining_prob": 0.3
+  },
+  "optimization": {
+    "optim": "adamw",
+    "lr": 1e-5,
+    "multiple_lr": false,
+    "weight_decay": 0.001,
+    "criterion": "triplet",
+    "margin": 0.1,
+    "epochs": 100,
+    "patience": 50
+  },
+  "evaluation": {
+    "val": {
+      "split": "2",
+      "tboard_name": "val"
+    },
+    "additional_testsets": [
+      {
+        "path": "/home/user/datasets/oxford_robotcar",
+        "split": "1",
+        "tboard_name": "test"
+      }
+    ],
+    "additional_gt_strategies": [],
+    "only_test_current_strategy": true
+  }
+}

@@ -1,15 +1,23 @@
 # CaseVPR: Correlation-Aware Sequential Embedding for  Sequence-to-Frame Visual Place Recognition
-CaseVPR is a sequence-based visual place recognition (VPR) pipeline. This repository provides a flexible, on-the-fly inference and evaluation framework that:
+CaseVPR is a sequence-based visual place recognition (VPR) pipeline. This repository provides 
+- a sequence encoder [training & evaluation pipeline](#sequence-encoder-training) that:
 
-- Ingests and preprocesses image sequences as they arrive, without any offline steps.
+  - Finetune sequence encoders with sequence inputs.
 
-- Extracts per-frame descriptors, then optionally aggregates them into a sequence embedding, using your chosen frontend.
+  - Evaluates trained sequence encoders with sequence retrieval metric (Recall@).
 
-- Matches sequences against a reference database with optional backends.
+- a flexible, on-the-fly [inference and evaluation framework](#pipeline-evaluations) that:
 
-- Reports overall evaluation metrics (precision, recall, accuracy etc.)
+  - Ingests and processes image sequences as they arrive.
 
-**Note**: This codebase focuses purely on inference and benchmarking. It does not include any training or fine-tuning codes. To fine-tune or retrain models on your own data, please see the [VGT](https://github.com/vandal-vpr/vg-transformers) and [OpenVPRLab](https://github.com/amaralibey/OpenVPRLab) repositories for full training pipelines.
+  - Extracts per-frame descriptors, then optionally aggregates them into a sequence embedding, using the chosen frontend.
+
+  - Matches sequences against a reference database with optional backends.
+
+  - Reports overall evaluation metrics (precision, recall, accuracy etc.)
+
+
+**Note**: For single image pretraining you can refer to [OpenVPRLab](https://github.com/amaralibey/OpenVPRLab).
 
 - [CaseVPR: Correlation-Aware Sequential Embedding for  Sequence-to-Frame Visual Place Recognition](#casevpr-correlation-aware-sequential-embedding-for--sequence-to-frame-visual-place-recognition)
 - [Abstract](#abstract)
@@ -17,7 +25,13 @@ CaseVPR is a sequence-based visual place recognition (VPR) pipeline. This reposi
   - [1. Using Docker (recommended)](#1-using-docker-recommended)
   - [2. Manual Installation](#2-manual-installation)
 - [Datasets and Weights](#datasets-and-weights)
-- [Evaluations](#evaluations)
+  - [Sequence Retrieval Results (R@1 / R@5 / R@10)](#sequence-retrieval-results-r1--r5--r10)
+  - [Image-level Correspondence Precision](#image-level-correspondence-precision)
+- [Sequence Encoder Training](#sequence-encoder-training)
+  - [1. Prepare a Training Config](#1-prepare-a-training-config)
+  - [2. Launch Training](#2-launch-training)
+  - [3. Evaluate Trained Sequence Encoder](#3-evaluate-trained-sequence-encoder)
+- [Pipeline Evaluations](#pipeline-evaluations)
   - [1. Prepare a Test Configuration](#1-prepare-a-test-configuration)
   - [2. Adjust Model and Dataset Paths](#2-adjust-model-and-dataset-paths)
   - [3. Run the Evaluations](#3-run-the-evaluations)
@@ -41,6 +55,9 @@ Particularly, a CaseNet is proposed to encode the correlation-aware features of 
 On this basis, an AdaptSeq-V2 searching strategy is proposed to identify frame-level correspondences of the query sequence in candidate regions determined by potential starting points.
 To validate our hierarchical pipeline, we evaluate CaseVPR on multiple datasets.
 Experiments demonstrate that our CaseVPR outperforms all benchmark methods in terms of average precision, and achieves new State-of-the-art (SOTA) results for sequence-based VPR.
+![Sequence-based paradigms for VPR.](assets/seq2imgVPR.png)
+Sequence-based paradigms for VPR. (a) Sequence retrieval encodes multiple frames into a single descriptor, losing the ability of frame-to-frame matching. (b) Sequence matching relies on brute-force search and constant speed assumption, which may lead to retrieval failures. (c) Our sequence-to-frame hierarchical matching pipeline combines the advantages of both paradigms, enabling coarse-level sequence retrieval followed by fine-grained sequence matching.
+
 # Installation
 
 ## 1. Using Docker (recommended)
@@ -61,7 +78,23 @@ The datasets used in this work can be found [here](https://entuedu-my.sharepoint
 
 The weights are available [here](https://entuedu-my.sharepoint.com/:f:/g/personal/heshan001_e_ntu_edu_sg/EjiHgyO279tPpwO-mmJiVp0BYuFQhboFxG0cS8-4NGm_0Q?e=e8FQAh).
 
-| Image Encoder | Seq. Encoder | Sequence Matcher | Oxford1 | Oxford1_v | Oxford2 | NYL    | SRC    | Sp2F   | W2F    | Sm2Sp  |
+## Sequence Retrieval Results (R@1 / R@5 / R@10)
+
+| Model      | Oxford1 | Oxford1_v | Oxford2 | NYL | SRC |
+|------------|---------|-----------|---------|-----|-----|
+| SeqNet     | 24.9 / 37.2 / 44.7 | 22.9 / 34.4 / 42.5 | 12.7 / 20.0 / 25.6 | 44.1 / 53.1 / 59.2 | 38.4 / 49.0 / 55.4 |
+| SeqVLAD    | 70.2 / 82.0 / 88.2 | 69.7 / 79.6 / 85.7 | 38.9 / 52.7 / 59.5 | 39.8 / 51.1 / 58.1 | 31.6 / 42.3 / 48.0 |
+| JIST       | 61.3 / 74.5 / 82.0 | 58.9 / 72.8 / 80.2 | 30.9 / 42.5 / 49.2 | 56.6 / 66.4 / 74.8 | 53.5 / 64.9 / 70.6 |
+| sVPR       | 35.1 / 47.9 / 57.3 | 40.9 / 56.5 / 64.4 | 11.2 / 18.9 / 24.7 | 42.3 / 49.2 / 55.1 | 51.9 / 63.5 / 70.1 |
+| CaseNet    | 90.8 / 96.7 / 98.2 | 85.4 / 93.6 / 96.0 | 71.5 / 83.0 / 88.3 | 84.9 / 90.4 / 94.0 | 84.4 / 92.1 / 95.8 |
+| CaseNet_ft | 93.5 / 97.7 / 98.5 | 86.1 / 94.4 / 96.4 | 77.7 / 87.4 / 91.3 | 86.1 / 90.5 / 94.4 | 85.6 / 92.9 / 96.8 |
+
+> **Known Issues**:
+> - All experiments slightly differ from the numbers in the paper due to non-deterministic operations in the original setup.
+> - `SeqNet` differs from the reported numbers in the original paper, due to a wrong batch/sequence split in original implementation of `SeqNet`.
+
+## Image-level Correspondence Precision
+| Image Encoder | Sequence Encoder | Sequence Matcher | Oxford1 | Oxford1_v | Oxford2 | NYL    | SRC    | Sp2F   | W2F    | Sm2Sp  |
 |----------------------|----------------|------------------|---------|-----------|---------|--------|--------|--------|--------|--------|
 | NetVLAD             | ×              | ×                | 7.45    | 14.74     | 3.89    | 38.93  | 26.94  | 43.33  | 16.38  | 39.88  |
 | EigenPlace_ft        | ×              | ×                | 37.35   | 46.86     | 15.30   | 54.56  | 43.71  | 74.09  | 32.00  | 60.39  |
@@ -91,20 +124,52 @@ The weights are available [here](https://entuedu-my.sharepoint.com/:f:/g/persona
 | CaseVPR224_ft | ×              | ×                | 47.26   | 63.66     | 37.30   | 82.83  | 63.71  | 91.44  | 79.74  | 89.56  |
 | CaseVPR322_ft | ×              | ×                | 51.17   | 63.61     | 41.85   | 82.16  | 64.57  | 92.72  | 83.49  | 93.00  |
 
-**NOTE**: Models with `_ft` are fine-tuned on Oxford-RobotCar, others are initialized by pre-trained weight.
+> **NOTE**: Models with `_ft` are fine-tuned on Oxford-RobotCar, others are initialized by pre-trained weight.
 
 
+# Sequence Encoder Training
 
-# Evaluations
+## 1. Prepare a Training Config
+* **Config template** – start from `scripts/configs/training/example_hvpr_casevpr.json` and edit dataset paths, sequence length, optimiser parameters, etc.
+* **Dataset layout** – the trainer expects:
+  ```
+  /dataset_root
+    /train
+      /database
+      /queries
+        /sequence
+          /* images */
+    /other_splits (e.g. 2, 3, test)
+  ```
+* **Field reference** – every option is documented in the docstring at the top of `scripts/train.py`.
+
+## 2. Launch Training
+Execute the trainer with your config:
+
+```bash
+python scripts/train.py --config scripts/configs/training/example_hvpr_casevpr.json
+```
+
+The command creates a timestamped folder under `output/train_logs/`, copies the config, and streams logs/TensorBoard summaries. Use `--dry-run` to validate the config without starting training.
+
+## 3. Evaluate Trained Sequence Encoder
+* **Config** – use `scripts/configs/seq_eval/example_eval.json` and point `model.checkpoint` at the trained run. If you omit the field, the evaluator falls back to the default weight declared in `scripts/configs/model_configs.py`.
+* **Command**
+
+```bash
+python scripts/eval_sequence.py --config scripts/configs/seq_eval/example_eval_hvpr_casevpr.json
+```
+
+# Pipeline Evaluations
 ## 1. Prepare a Test Configuration
 
-Create a JSON file (e.g. `scripts/configs/batch_tests.json`) with the following fields:
+Create a JSON file (e.g. `scripts/configs/eval/batch_tests.json`) with the following fields:
 
 * **`test_lst`**
   Defines the datasets to evaluate. Each entry must specify:
 
   * `ds_name`: Dataset identifier
-  * `l1`, `l2`: First- and second-loop distances
+  * `l1`, `l2`: First- and second-loop split name
   * `positive_dist`: Radius for precision computation
 
 * **`pipeline_lst`**
@@ -117,6 +182,8 @@ Create a JSON file (e.g. `scripts/configs/batch_tests.json`) with the following 
 
 * **`settings_lst`** *(optional)*
   For ablation studies, list overrides relative to `default_settings`. Each element describes one variant.
+
+For a complete field-by-field breakdown, check the docstring at the top of `scripts/eval.py`.
 
 
 ## 2. Adjust Model and Dataset Paths
@@ -196,7 +263,7 @@ This repo is based on / inspired by following works:
 - [SALAD](https://github.com/serizba/salad)
 - [MixVPR](https://github.com/amaralibey/MixVPR)
 - [sVPR](https://github.com/tiev-tongji/Spatio-Temporal-SeqVPR)
-- [VGT](https://github.com/vandal-vpr/vg-transformers)
+- [VGT(SeqVLAD)](https://github.com/vandal-vpr/vg-transformers)
 - [CricaVPR](https://github.com/Lu-Feng/CricaVPR)
 - [pySeqSLAM](https://github.com/tmadl/pySeqSLAM)
 - [seqNet](https://github.com/oravus/seqNet)

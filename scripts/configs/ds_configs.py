@@ -1,4 +1,4 @@
-from casevpr.datasets import NordlandV, Robotcar, RosImg
+from casevpr.datasets import NordlandV, Robotcar
 
 
 ds_info_dict = {
@@ -12,6 +12,6 @@ ds_info_dict = {
         "path": "/home/user/datasets/nordland_v",
         "class": NordlandV},
     "rosimg": {
-        "path": "/home/user/datasets/rosimg_ntu",
-        "class": RosImg}
+        "path": "/home/user/datasets/img_ntu",
+        "class": Robotcar}
 }

@@ -41,13 +41,45 @@ class Robotcar():
         """Initialize Robotcar dataset.
 
         Args:
-            name (str): name of the dataset, i.e. 'test_queries' or 'train_database'.
-            DATASET_DIR (str): path to the dataset directory.
+            name (str): dataset identifier. Legacy format is ``split_subset`` such as
+                ``test_database`` or ``train_queries``. Nested scenes can be referenced
+                with ``scene/split_subset`` or ``scene/split`` when the directory layout is
+                ``<root>/<scene>/<split>/...``.
+            DATASET_DIR (str): path to the dataset directory or root folder that contains
+                multiple scenes in nested sub-directories.
         """
-        self.split_name = name.split('_')[0]
-        self.name = name.split('_')[1]
-        self.path = os.path.join(
-            DATASET_DIR, f"{self.split_name}", f"{self.name}", "sequence")
+
+        if "/" in name:
+            scene, local_name = name.split("/", 1)
+            dataset_root = os.path.join(DATASET_DIR, scene)
+        else:
+            dataset_root = DATASET_DIR
+            local_name = name
+
+        name_parts = local_name.split("_")
+        self.split_name = name_parts[0]
+        self.name = "_".join(name_parts[1:]) if len(name_parts) > 1 else None
+
+        candidate_paths = []
+        if self.name:
+            candidate_paths.extend([
+                os.path.join(dataset_root, self.split_name, self.name, "sequence"),
+                os.path.join(dataset_root, self.split_name, self.name),
+            ])
+        candidate_paths.extend([
+            os.path.join(dataset_root, self.split_name, "sequence"),
+            os.path.join(dataset_root, self.split_name),
+        ])
+
+        for candidate in candidate_paths:
+            if os.path.isdir(candidate):
+                self.path = candidate
+                break
+        else:
+            raise FileNotFoundError(
+                f"Could not resolve Robotcar path for name='{name}' under '{DATASET_DIR}'"
+            )
+
         self.len = len(os.listdir(self.path))
         self.images = {}
         for image_file in os.listdir(self.path):

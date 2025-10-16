@@ -2,8 +2,8 @@
   "test_lst": [
     {
       "ds_name": "rosimg",
-      "l1": ["20231114_nanyanglink_day_cloudy"],
-      "l2": ["20231103_nanyanglink_night_sunny"],
+      "l1": ["nyl_night1103_day1114/database"],
+      "l2": ["nyl_night1103_day1114/queries"],
       "positive_dist": 2
     },
     {
@@ -22,26 +22,26 @@
     },
     {
       "ds_name": "oxford",
-      "l1": ["1_database"],
-      "l2": ["1_queries"],
+      "l1": ["1/database"],
+      "l2": ["1/queries"],
       "positive_dist": 2
     },
     {
       "ds_name": "oxford",
-      "l1": ["2_database"],
-      "l2": ["2_queries"],
+      "l1": ["2/database"],
+      "l2": ["2/queries"],
       "positive_dist": 2
     },
     {
       "ds_name": "oxford_v",
-      "l1": ["1_database"],
-      "l2": ["1_queries"],
+      "l1": ["1/database"],
+      "l2": ["1/queries"],
       "positive_dist": 2
     },
     {
       "ds_name": "rosimg",
-      "l1": ["src_ccw_day_210622"],
-      "l2": ["src_ccw_night_230622"],
+      "l1": ["src_night230622_day210622/database"],
+      "l2": ["src_night230622_day210622/queries"],
       "positive_dist": 2
     }
   ],

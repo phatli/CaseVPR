@@ -1,0 +1,101 @@
+{
+  "experiment": {
+    "name": "casevpr_hvpr_eval",
+    "logs_root": "output/seq_eval_logs",
+    "seed": 43,
+    "deterministic": true,
+    "infer_batch_size": 1,
+    "save_preds_json": false,
+    "save_gif": false,
+    "save_html": false
+  },
+  "model_variants": {
+    "CaseNet": {
+      "model": {
+        "seq_encoder": "hvpr_casevpr_224_crica"
+      }
+    },
+    "CaseNet_ft": {
+      "model": {
+        "seq_encoder": "hvpr_casevpr_224"
+      }
+    },
+    "SeqVLAD": {
+      "model": {
+        "seq_encoder": "vgg16_seqvlad"
+      }
+    },
+    "JIST": {
+      "model": {
+        "seq_encoder": "jist"
+      }
+    },
+    "SVPR": {
+      "model": {
+        "seq_encoder": "svpr"
+      }
+    },
+    "SeqNet": {
+      "model": {
+        "seq_encoder": "hvpr_seqnet"
+      }
+    }
+  },
+  "dataset_variants": {
+    "oxford1": {
+      "data": {
+        "dataset_path": "/home/user/datasets/oxford_robotcar",
+        "split": "1",
+        "seq_length": 5,
+        "cut_last_frame": false,
+        "val_posDistThr": 2,
+        "seq_gt_strategy": "lax",
+        "reverse": false
+      }
+    },
+    "oxford1_v": {
+      "data": {
+        "dataset_path": "/home/user/datasets/oxford_robotcar_v",
+        "split": "1",
+        "seq_length": 5,
+        "cut_last_frame": false,
+        "val_posDistThr": 2,
+        "seq_gt_strategy": "lax",
+        "reverse": false
+      }
+    },
+    "oxford2": {
+      "data": {
+        "dataset_path": "/home/user/datasets/oxford_robotcar",
+        "split": "2",
+        "seq_length": 5,
+        "cut_last_frame": false,
+        "val_posDistThr": 2,
+        "seq_gt_strategy": "lax",
+        "reverse": false
+      }
+    },
+    "nyl": {
+      "data": {
+        "dataset_path": "/home/user/datasets/img_ntu",
+        "split": "nyl_night1103_day1114",
+        "seq_length": 5,
+        "cut_last_frame": false,
+        "val_posDistThr": 2,
+        "seq_gt_strategy": "lax",
+        "reverse": false
+      }
+    },
+    "src": {
+      "data": {
+        "dataset_path": "/home/user/datasets/img_ntu",
+        "split": "src_night230622_day210622",
+        "seq_length": 5,
+        "cut_last_frame": false,
+        "val_posDistThr": 2,
+        "seq_gt_strategy": "lax",
+        "reverse": false
+      }
+    }
+  }
+}
